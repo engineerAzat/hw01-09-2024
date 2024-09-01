@@ -1,9 +1,12 @@
 package pro.sky.skypro.service;
 
 import org.springframework.stereotype.Service;
+import pro.sky.skypro.exception.EmployeeAlreadyAddedException;
 import pro.sky.skypro.model.Employee;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -18,28 +21,40 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee add(String firstName, String secondName) {
         Employee employee = new Employee(firstName, secondName);
+        if (employeeList.contains(employee)) {
+            throw new EmployeeAlreadyAddedException();
+        }
         employeeList.add(employee);
-        return null;
+        return employee;
     }
 
+
     @Override
-    public Employee mremove(String firstName, String secondName) {
+    public Employee remove(String firstName, String secondName) {
         Employee employee = new Employee(firstName, secondName);
         if (employeeList.contains(employee)) {
             employeeList.remove(employee);
-            }
-        return null;
+            return employee;
+        }
+        throw new EmployeeAlreadyAddedException();
     }
 
+
     @Override
-    public Employee nfind(String firstName, String secondName) {
+    public Employee find(String firstName, String secondName) {
         Employee employee = new Employee(firstName, secondName);
 
         if (employeeList.contains(employee)) {
             return employee;
         }
 
-        return null;
+        throw new EmployeeAlreadyAddedException();
 
+
+    }
+
+    @Override
+    public Collection<Employee> findAll() {
+        return Collections.unmodifiableList(employeeList);
     }
 }
